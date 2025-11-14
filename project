@@ -12,3 +12,36 @@ players <- read_csv("data/players.csv")
 sessions <- read_csv("data/sessions.csv")
 colnames(players)
 colnames(sessions)
+
+
+# quick look at structure
+glimpse(players)
+glimpse(sessions)
+
+# basic dimensions
+cat("players.csv:",  nrow(players),  "rows and", ncol(players),  "columns\n")
+cat("sessions.csv:", nrow(sessions), "rows and", ncol(sessions), "columns\n")
+
+# thing to figure out: how many players actually have at least one session?
+players_with_sessions <- players |>
+  filter(hashedEmail %in% sessions$hashedEmail) |>
+  nrow()
+
+cat("Players with >= 1 session:", players_with_sessions, "\n")
+cat("Players with 0 sessions:", nrow(players) - players_with_sessions, "\n")
+
+# missingness summary for text section
+na_players <- sapply(players,  \(x) sum(is.na(x)))
+na_sessions <- sapply(sessions, \(x) sum(is.na(x)))
+
+kable(
+  tibble(variable = names(na_players),
+         NA_count = as.integer(na_players)),
+  caption = "Missing values in players.csv"
+)
+
+kable(
+  tibble(variable = names(na_sessions),
+         NA_count = as.integer(na_sessions)),
+  caption = "Missing values in sessions.csv"
+)

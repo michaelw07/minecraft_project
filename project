@@ -45,3 +45,22 @@ kable(
          NA_count = as.integer(na_sessions)),
   caption = "Missing values in sessions.csv"
 )
+
+
+# ---- mean table for numeric variables in players.csv ----
+
+num_cols_players <- players |>
+  select(where(is.numeric)) |>
+  colnames()
+
+player_means <- players |>
+  summarize(across(all_of(num_cols_players),
+                   ~ round(mean(.x, na.rm = TRUE), 2))) |>
+  pivot_longer(everything(),
+               names_to = "variable",
+               values_to = "mean")
+
+kable(
+  player_means,
+  caption = "Mean of quantitative variables in players.csv (rounded to 2 decimals)"
+)
